@@ -19,7 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView mTextViewResult;
+    private TextView mTextViewResult,da;
     private RequestQueue mQueue;
 
     @Override
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         mTextViewResult = findViewById(R.id.text_view_result);
         Button buttonParse = findViewById(R.id.button_parse);
-
+da=findViewById(R.id.textView);
         mQueue = Volley.newRequestQueue(this);
 
         buttonParse.setOnClickListener(new View.OnClickListener() {
@@ -42,24 +42,38 @@ public class MainActivity extends AppCompatActivity {
 
     private void jsonParse() {
 
-        String url = "https://api.myjson.com/bins/kp9wz\"";
+        String url = "http://api.openweathermap.org/data/2.5/weather?appid=51bd186d81e9633cd022b45a26cdf1f2&q=lucknow";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray jsonArray = response.getJSONArray("employees");
 
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject employee = jsonArray.getJSONObject(i);
+                            System.out.print(response);
+                            JSONArray jsonArray = response.getJSONArray("weather");
 
-                                String firstName = employee.getString("firstname");
-                                int age = employee.getInt("age");
-                                String mail = employee.getString("mail");
+                            JSONObject weatherData = jsonArray.getJSONObject(0);
+                            String desc = weatherData.getString("description");
+                            int id = weatherData.getInt("id");
+                            String main = weatherData.getString("main");
+                            String icon = weatherData.getString("icon");
 
-                                mTextViewResult.append(firstName + ", " + String.valueOf(age) + ", " + mail + "\n\n");
-                            }
+                            String base = response.getString("base");
+                            String timezome = response.getString("timezone");
+
+                            mTextViewResult.append(desc+" , "+id+" , "+main+" , "+icon+" , "+base+" , "+timezome);
+
+
+//                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                JSONObject employee = jsonArray.getJSONObject(i);
+//
+//                                String firstName = employee.getString("firstname");
+//                                int age = employee.getInt("age");
+//                                String mail = employee.getString("mail");
+//
+//                                mTextViewResult.append(firstName + ", " + String.valueOf(age) + ", " + mail + "\n\n");
+//                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
